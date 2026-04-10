@@ -14,8 +14,15 @@ jobs:
           repository: ${{ vars.REPOSITORY }}
           ref: ${{ vars.REF }}
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
       - name: Setup uv
         uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.11.6"
 
       - name: Run script
         env:
@@ -29,6 +36,10 @@ jobs:
           CUSTOM_CONFIG: ${{ vars.CUSTOM_CONFIG }}
         run: |
           printf "%b\n" "$CUSTOM_CONFIG" > config/custom.yaml
-          echo "Use custom config: "
+          echo "Use custom config:"
           cat config/custom.yaml
-          uv run src/zotero_arxiv_daily/main.py
+
+          python -V
+          uv --version
+
+          uv run --locked src/zotero_arxiv_daily/main.py
